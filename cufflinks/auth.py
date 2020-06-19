@@ -52,7 +52,7 @@ try:
 	os.remove(TEST_FILE)
 	_file_permissions = True
 except:
-	_file_permissions = False                 
+	_file_permissions = False
 
 
 def get_path():
@@ -100,26 +100,26 @@ def set_config_file(sharing=None,theme=None,colorscale=None,offline=None,offline
 				secret - only people with the link can see the chart
 	theme : string
 			Sets the default theme
-			See cufflinks.getThemes() for available themes 
+			See cufflinks.getThemes() for available themes
 	colorscale : string
 			Sets the default colorscale
 			See cufflinks.scales()
 	offline : bool
 			If true then the charts are rendered
-			locally. 
+			locally.
 	offline_connected : bool
 			If True, the plotly.js library will be loaded
 			from an online CDN. If False, the plotly.js library will be loaded locally
 			from the plotly python package
 	offline_show_link : bool
-			If true then the chart will show a link to 
-			plot.ly at the bottom right of the chart 
+			If true then the chart will show a link to
+			plot.ly at the bottom right of the chart
 	offline_link_text : string
-			Text to display as link at the bottom 
-			right of the chart 
+			Text to display as link at the bottom
+			right of the chart
 	offline_config : dict
 			Additional configuration options
-			For the complete list of config options check out: 
+			For the complete list of config options check out:
 			https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js
 	datagen_mode : string
 			Mode in which the data is generated
@@ -174,9 +174,13 @@ def set_config_file(sharing=None,theme=None,colorscale=None,offline=None,offline
 		if _ in kwargs:
 			config[_]=kwargs[_]
 	save_json_dict(CONFIG_FILE, config)
-	ensure_local_files()  
+	ensure_local_files()
 
-
+try:
+    from functools import lru_cache
+except ImportError:
+    from backports.functools_lru_cache import lru_cache
+@lru_cache(maxsize=32)
 def get_config_file(*args):
     """
     Return specified args from `~/.config`. as dict.
@@ -187,7 +191,7 @@ def get_config_file(*args):
 
     """
     if _file_permissions:
-        ensure_local_files()  
+        ensure_local_files()
         return load_json_dict(CONFIG_FILE, *args)
     else:
         return _FILE_CONTENT[CONFIG_FILE]
@@ -202,7 +206,7 @@ def get_user_colors(*args):
 
     """
     if _file_permissions:
-        ensure_local_files()  
+        ensure_local_files()
         return load_json_dict(COLORS_FILE, *args)
     else:
         return _FILE_CONTENT[COLORS_FILE]
@@ -217,7 +221,7 @@ def get_user_scales(*args):
 
     """
     if _file_permissions:
-        ensure_local_files()  
+        ensure_local_files()
         return load_json_dict(SCALES_FILE, *args)
     else:
         return _FILE_CONTENT[SCALES_FILE]
@@ -232,7 +236,7 @@ def get_user_themes(*args):
 
     """
     if _file_permissions:
-        ensure_local_files()  
+        ensure_local_files()
         return load_json_dict(THEMES_FILE, *args)
     else:
         return _FILE_CONTENT[THEMES_FILE]
@@ -247,7 +251,7 @@ def load_json_dict(filename, *args):
 				if not isinstance(data, dict):
 					data = {}
 			except:
-				pass 
+				pass
 		if args:
 			return {key: data[key] for key in args if key in data}
 	return data
